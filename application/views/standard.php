@@ -65,12 +65,14 @@
       </div>
     </nav>
 
-    <div class="container">
+    <div class="container-fluid">
       <?php if ($this->session->flashdata('Infomelding')) { ?>
           <div class="alert alert-success" role="alert"><?php echo $this->session->flashdata('Infomelding'); ?></div>
       <?php } ?>
       <?php echo $contents; ?>
     </div> <!-- /container -->
+
+    <p class="footer">Side lastet på <strong>{elapsed_time}</strong> sekunder. <?php echo  (ENVIRONMENT === 'development') ?  'CodeIgniter Version <strong>' . CI_VERSION . '</strong>' : '' ?></p>
 
 
     <!-- Bootstrap core JavaScript
