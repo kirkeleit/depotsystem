@@ -1,4 +1,4 @@
-<?php if (isset($ForbruksStatus)) { ?>
+<?php if (count($ForbruksStatus) > 0) { ?>
 <div class="panel panel-default panel-danger">
   <div class="panel-heading"><b>Forbruksutstyr som må oppdateres</b></div>
   <div class="panel-body">
@@ -34,8 +34,12 @@
 </div>
 <?php } ?>
 
+<?php if (FALSE) { ?>
 <div class="panel panel-default panel-danger">
   <div class="panel-heading"><b>Utstyr som trenger vedlikehold</b></div>
-  <div class="panel-body">
-  </div>
 </div>
+<?php } ?>
+
+<?php if (count($ForbruksStatus) == 0) { ?>
+<div class="jumbotron"><h2>Alt er ok! Godt jobba! :-)</h2></div>
+<?php } ?>
