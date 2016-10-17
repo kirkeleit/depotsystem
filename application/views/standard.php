@@ -51,8 +51,8 @@
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Utstyr <span class="caret"></span></a>
               <ul class="dropdown-menu">
+                <li><?php echo anchor('/Utstyr/Liste','Utstyrsliste'); ?></li>
                 <li><?php echo anchor('/Utstyr/registrereutstyr','Registrere utstyr'); ?></li>
-                <li><?php echo anchor('/Utstyr/Liste','Liste'); ?></li>
                 <li role="separator" class="divider"></li>
                 <li><?php echo anchor('/Utstyr/Produsenter','Produsenter'); ?></li>
                 <li><?php echo anchor('/Utstyr/kategorier','Kategorier'); ?></li>
@@ -61,6 +61,12 @@
               </ul>
             </li>
           </ul>
+          <form class="navbar-form navbar-right">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Strekkode">
+            </div>
+            <button type="submit" class="btn btn-default">Finn</button>
+          </form>
         </div><!--/.nav-collapse -->
       </div>
     </nav>

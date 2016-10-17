@@ -38,6 +38,7 @@
       } else {
         $data['Lagerplass'] = $this->Utstyr_model->lagerplass($this->uri->segment(3));
         $data['Lagerplasser'] = $this->Utstyr_model->lagerplasser();
+        $data['Utstyrsliste'] = $this->Utstyr_model->utstyrsliste(array('LagerplassID'=>$this->uri->segment(3)));
         $this->template->load('standard','utstyr/lagerplass',$data);
       }
     }

@@ -2,7 +2,9 @@
   <table class="table table-striped table-hover table-condensed">
     <thead>
       <tr>
-        <th>ID</th>
+        <th>Lagerplass</th>
+        <th>Kategori</th>
+        <th>Produsent</th>
         <th>Navn</th>
         <th>Strekkode</th>
         <th>Antall</th>
@@ -14,10 +16,12 @@
     foreach ($Utstyrsliste as $Utstyr) {
 ?>
       <tr>
-        <td><?php echo $Utstyr['UtstyrID']; ?></td>
+        <td><?php echo $Utstyr['LagerplassNavn']; ?></td>
+        <td><?php echo $Utstyr['KategoriNavn']; ?></td>
+        <td><?php echo $Utstyr['ProdusentNavn']; ?></td>
         <td><?php echo anchor('/Utstyr/Utstyrsinfo/'.$Utstyr['UtstyrID'],$Utstyr['Navn']); ?></td>
         <td><?php echo $Utstyr['Strekkode']; ?></td>
-        <td><?php echo ($Utstyr['Forbruksutstyr'] == 1 ? $Utstyr['Antall']." stk" : "&nbsp;"); ?></td>
+        <td><?php echo ($Utstyr['Forbruksutstyr'] == 1 ? $Utstyr['Antall'].' / '.$Utstyr['AntallMinimum'] : $Utstyr['Antall']); ?></td>
       </tr>
 <?php
     }

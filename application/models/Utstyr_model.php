@@ -153,8 +153,13 @@
       $this->db->query("UPDATE Leverandorer SET DatoSlettet='".date('Y-m-d H:i:s')."' WHERE LeverandorID=".$ID." LIMIT 1");
     }
 
-    function utstyrsliste() {
-      $rutstyrsliste = $this->db->query("SELECT UtstyrID,DatoRegistrert,Navn,Strekkode,Forbruksutstyr,IF(u.Forbruksutstyr=1,(SELECT SUM(Antall) FROM UtstyrForbruk WHERE (UtstyrForbruk.UtstyrID=u.UtstyrID)),NULL) AS Antall FROM Utstyr u ORDER BY Navn ASC");
+    function utstyrsliste($filter = null) {
+      $sql = "SELECT UtstyrID,DatoRegistrert,Navn,Strekkode,Forbruksutstyr,AntallMinimum,IF(u.Forbruksutstyr=1,(SELECT COALESCE(SUM(Antall),0) FROM UtstyrForbruk WHERE (UtstyrForbruk.UtstyrID=u.UtstyrID)),1) AS Antall,(SELECT Navn FROM Kategorier k WHERE (k.KategoriID=u.KategoriID)) AS KategoriNavn,(SELECT Navn FROM Produsenter p WHERE (p.ProdusentID=u.ProdusentID)) AS ProdusentNavn,(SELECT Navn FROM Lagerplasser l WHERE (l.LagerplassID=u.LagerplassID)) AS LagerplassNavn FROM Utstyr u WHERE 1";
+      if (isset($filter['LagerplassID'])) {
+        $sql .= " AND (LagerplassID=".$filter['LagerplassID'].")";
+      }
+      $sql .= " ORDER BY Navn ASC";
+      $rutstyrsliste = $this->db->query($sql);
       foreach ($rutstyrsliste->result_array() as $rutstyr) {
         $utstyrsliste[] = $rutstyr;
         unset($rutstyr);
@@ -186,11 +191,14 @@
         $this->db->query($this->db->update_string('Utstyr',$utstyr,'UtstyrID='.$ID));
         $utstyr['UtstyrID'] = $ID;
       }
+      if ($this->db->affected_rows() > 0) {
+        $this->session->set_flashdata('Infomelding','Utstyr "'.$utstyr['Navn'].'" ble vellykket oppdatert!');
+      }
       return $utstyr;
     }
 
     function statusforbruk() {
-      $rutstyrsliste = $this->db->query("SELECT UtstyrID,DatoRegistrert,Navn,Strekkode,Forbruksutstyr,(SELECT SUM(Antall) FROM UtstyrForbruk WHERE (UtstyrForbruk.UtstyrID=u.UtstyrID)) AS Antall,MinimumsAntall,(SELECT Navn FROM Lagerplasser l WHERE (l.LagerplassID=u.LagerplassID)) AS Lagerplass,(SELECT DatoRegistrert FROM UtstyrForbruk f WHERE (f.UtstyrID=u.UtstyrID) ORDER BY DatoRegistrert DESC LIMIT 1) AS SisteForbruk FROM Utstyr u WHERE (Forbruksutstyr=1) AND ((SELECT SUM(Antall) FROM UtstyrForbruk WHERE (UtstyrForbruk.UtstyrID=u.UtstyrID))<MinimumsAntall) ORDER BY Navn ASC");
+      $rutstyrsliste = $this->db->query("SELECT UtstyrID,DatoRegistrert,Navn,Strekkode,Forbruksutstyr,(SELECT SUM(Antall) FROM UtstyrForbruk WHERE (UtstyrForbruk.UtstyrID=u.UtstyrID)) AS Antall,AntallMinimum,(SELECT Navn FROM Lagerplasser l WHERE (l.LagerplassID=u.LagerplassID)) AS Lagerplass,(SELECT DatoRegistrert FROM UtstyrForbruk f WHERE (f.UtstyrID=u.UtstyrID) ORDER BY DatoRegistrert DESC LIMIT 1) AS SisteForbruk FROM Utstyr u WHERE (Forbruksutstyr=1) AND ((SELECT SUM(Antall) FROM UtstyrForbruk WHERE (UtstyrForbruk.UtstyrID=u.UtstyrID))<AntallMinimum) ORDER BY Navn ASC");
       foreach ($rutstyrsliste->result_array() as $rutstyr) {
         $utstyrsliste[] = $rutstyr;
         unset($rutstyr);
