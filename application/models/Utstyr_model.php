@@ -170,7 +170,7 @@
     }
 
     function utstyrsinfo($ID) {
-      $rutstyrsliste = $this->db->query("SELECT UtstyrID,DatoRegistrert,DatoEndret,ProdusentID,LeverandorID,KategoriID,LagerplassID,Navn,Notater,Strekkode,Forbruksutstyr FROM Utstyr WHERE (UtstyrID=".$ID.") LIMIT 1");
+      $rutstyrsliste = $this->db->query("SELECT UtstyrID,DatoRegistrert,DatoEndret,ProdusentID,(SELECT Navn FROM Produsenter p WHERE (p.ProdusentID=u.ProdusentID)) AS ProdusentNavn,KategoriID,(SELECT Navn FROM Kategorier k WHERE (k.KategoriID=u.KategoriID)) AS KategoriNavn,LagerplassID,(SELECT Navn FROM Lagerplasser l WHERE (l.LagerplassID=u.LagerplassID)) AS LagerplassNavn,Navn,Notater,Strekkode,Forbruksutstyr FROM Utstyr u WHERE (UtstyrID=".$ID.") LIMIT 1");
       if ($utstyr = $rutstyrsliste->row_array()) {
         if ($utstyr['Forbruksutstyr'] == 1) {
           $rforbruksliste = $this->db->query("SELECT ID,DatoRegistrert,UtstyrID,AktivitetID,Antall,Kommentar FROM UtstyrForbruk WHERE (UtstyrID=".$utstyr['UtstyrID'].") ORDER BY DatoRegistrert DESC");

@@ -140,18 +140,22 @@
       $this->load->model('Utstyr_model');
       $data['Utstyr'] = null;
       $data['Produsenter'] = $this->Utstyr_model->produsenter();
-      $data['Leverandorer'] = $this->Utstyr_model->leverandorer();
       $data['Kategorier'] = $this->Utstyr_model->kategorier();
       $data['Lagerplasser'] = $this->Utstyr_model->lagerplasser();
-      $this->template->load('standard','utstyr/utstyrsinfo',$data);
+      $this->template->load('standard','utstyr/endreutstyr',$data);
     }
 
     public function utstyrsinfo() {
       $this->load->model('Utstyr_model');
+      $data['Utstyr'] = $this->Utstyr_model->utstyrsinfo($this->uri->segment(3));
+      $this->template->load('standard','utstyr/utstyrsinfo',$data);
+    }
+
+    public function endreutstyr() {
+      $this->load->model('Utstyr_model');
       if ($this->input->post('UtstyrLagre')) {
         $ID = $this->input->post('UtstyrID');
         $utstyr['ProdusentID'] = $this->input->post('ProdusentID');
-        $utstyr['LeverandorID'] = $this->input->post('LeverandorID');
         $utstyr['KategoriID'] = $this->input->post('KategoriID');
         $utstyr['LagerplassID'] = $this->input->post('LagerplassID');
         $utstyr['Navn'] = $this->input->post('Navn');
@@ -162,11 +166,10 @@
         redirect('utstyr/utstyrsinfo/'.$utstyr['UtstyrID']);
       } else {
         $data['Produsenter'] = $this->Utstyr_model->produsenter();
-        $data['Leverandorer'] = $this->Utstyr_model->leverandorer();
         $data['Kategorier'] = $this->Utstyr_model->kategorier();
         $data['Lagerplasser'] = $this->Utstyr_model->lagerplasser();
         $data['Utstyr'] = $this->Utstyr_model->utstyrsinfo($this->uri->segment(3));
-        $this->template->load('standard','utstyr/utstyrsinfo',$data);
+        $this->template->load('standard','utstyr/endreutstyr',$data);
       }
     }
 }
