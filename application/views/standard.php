@@ -24,6 +24,15 @@
     <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
     <script src="/js/ie-emulation-modes-warning.js"></script>
 
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
+    <script src="/js/bootstrap.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="/js/ie10-viewport-bug-workaround.js"></script>
+
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -60,6 +69,15 @@
                 <li><?php echo anchor('/Utstyr/Leverandorer','Leverandører'); ?></li>
               </ul>
             </li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Aktiviteter <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><?php echo anchor('/Aktiviteter/','Oversikt'); ?></li>
+                <li role="separator" class="divider"></li>
+                <li><?php echo anchor('/Aktiviteter/NyAktivitet','Ny aktivitet'); ?></li>
+                <li><?php echo anchor('/Aktiviteter/NyUtstyrsliste','Ny utstyrsliste'); ?></li>
+              </ul>
+            </li>
           </ul>
           <form class="navbar-form navbar-right">
             <div class="form-group">
@@ -72,6 +90,9 @@
     </nav>
 
     <div class="container-fluid">
+      <?php if ($this->session->flashdata('Feilmelding')) { ?>
+          <div class="alert alert-danger" role="alert"><?php echo $this->session->flashdata('Feilmelding'); ?></div>
+      <?php } ?>
       <?php if ($this->session->flashdata('Infomelding')) { ?>
           <div class="alert alert-success" role="alert"><?php echo $this->session->flashdata('Infomelding'); ?></div>
       <?php } ?>
@@ -81,13 +102,5 @@
     <p class="footer">Side lastet på <strong>{elapsed_time}</strong> sekunder. <?php echo  (ENVIRONMENT === 'development') ?  'CodeIgniter Version <strong>' . CI_VERSION . '</strong>' : '' ?></p>
 
 
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
-    <script src="/js/bootstrap.min.js"></script>
-    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <script src="/js/ie10-viewport-bug-workaround.js"></script>
   </body>
 </html>
