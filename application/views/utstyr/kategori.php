@@ -1,8 +1,7 @@
-<h3 class="sub-header">Kategori</h3>
-
 <?php echo form_open_multipart('Utstyr/Kategori/'.$Kategori['KategoriID']); ?>
 <input type="hidden" name="KategoriID" value="<?php echo set_value('KategoriID',$Kategori['KategoriID']); ?>" />
 <div class="panel panel-default">
+  <div class="panel-heading"><b>Kategori</b></div>
   <div class="panel-body">
 
     <div class="form-group">

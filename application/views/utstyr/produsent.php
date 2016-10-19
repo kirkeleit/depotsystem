@@ -1,8 +1,7 @@
-<h3 class="sub-header">Produsent</h3>
-
 <?php echo form_open_multipart('Utstyr/Produsent/'.$Produsent['ProdusentID']); ?>
 <input type="hidden" name="ProdusentID" value="<?php echo set_value('ProdusentID',$Produsent['ProdusentID']); ?>" />
 <div class="panel panel-default">
+  <div class="panel-heading"><b>Produsent</b></div>
   <div class="panel-body">
 
     <div class="form-group">

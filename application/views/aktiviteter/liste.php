@@ -30,8 +30,8 @@
   </div>
 </div>
 
-<div class="panel panel-default">
-  <div class="panel-heading"><b>Utstyrslister</b></div>
+<div class="panel panel-info">
+  <div class="panel-heading"><b>Plukklister</b></div>
   <div class="table-responsive">
     <table class="table table-striped table-hover table-condensed">
       <thead>
@@ -46,16 +46,16 @@
       </thead>
       <tbody>
 <?php
-  if (isset($Utstyrslister)) {
-    foreach ($Utstyrslister as $Utstyrsliste) {
+  if (isset($Plukklister)) {
+    foreach ($Plukklister as $Plukkliste) {
 ?>
         <tr>
-          <td><?php echo $Utstyrsliste['UtstyrslisteID']; ?></td>
-          <td><?php echo date('d.m.Y',strtotime($Utstyrsliste['DatoRegistrert'])); ?></td>
-          <td><?php echo date('d.m.Y',strtotime($Utstyrsliste['DatoEndret'])); ?></td>
-          <td><?php echo $Utstyrsliste['AktivitetNavn']; ?></td>
-          <td><?php echo anchor('/Aktiviteter/Utstyrsliste/'.$Utstyrsliste['UtstyrslisteID'],$Utstyrsliste['Beskrivelse']); ?></td>
-          <td><?php echo $Utstyrsliste['AntallLinjer']; ?></td>
+          <td><?php echo $Plukkliste['PlukklisteID']; ?></td>
+          <td><?php echo date('d.m.Y',strtotime($Plukkliste['DatoRegistrert'])); ?></td>
+          <td><?php echo date('d.m.Y',strtotime($Plukkliste['DatoEndret'])); ?></td>
+          <td><?php echo $Plukkliste['AktivitetNavn']; ?></td>
+          <td><?php echo anchor('/Aktiviteter/Plukkliste/'.$Plukkliste['PlukklisteID'],$Plukkliste['Beskrivelse']); ?></td>
+          <td><?php echo $Plukkliste['AntallLinjer']; ?></td>
         </tr>
 <?php
     }

@@ -6,7 +6,7 @@
     public function index() {
       $this->load->model('Aktiviteter_model');
       $data['Aktiviteter'] = $this->Aktiviteter_model->aktiviteter();
-      $data['Utstyrslister'] = $this->Aktiviteter_model->utstyrslister();
+      $data['Plukklister'] = $this->Aktiviteter_model->plukklister();
       $this->template->load('standard','aktiviteter/liste',$data);
     }
 
@@ -34,31 +34,31 @@
       }
     }
 
-    public function nyutstyrsliste() {
+    public function nyplukkliste() {
       $this->load->model('Aktiviteter_model');
-      $data['Utstyrsliste'] = null;
+      $data['Plukkliste'] = null;
       $data['Aktiviteter'] = $this->Aktiviteter_model->aktiviteter();
-      $this->template->load('standard','aktiviteter/utstyrsliste',$data);
+      $this->template->load('standard','aktiviteter/plukkliste',$data);
     }
 
-    public function utstyrsliste() {
+    public function plukkliste() {
       $this->load->model('Aktiviteter_model');
       if ($this->input->post('UtstyrStrekkode')) {
-        $ID = $this->input->post('UtstyrslisteID');
-        $this->Aktiviteter_model->utstyrslisteleggtilutstyr($ID,trim($this->input->post('UtstyrStrekkode')));
-        redirect('Aktiviteter/Utstyrsliste/'.$ID);
-      } elseif ($this->input->post('UtstyrslisteLagre')) {
-        $ID = $this->input->post('UtstyrslisteID');
-        $utstyrsliste['AktivitetID'] = $this->input->post('AktivitetID');
-        $utstyrsliste['Beskrivelse'] = $this->input->post('Beskrivelse');
-        $utstyrsliste['Notater'] = $this->input->post('Notater');
-        $utstyrsliste = $this->Aktiviteter_model->lagreutstyrsliste($ID,$utstyrsliste);
-        redirect('Aktiviteter/Utstyrsliste/'.$utstyrsliste['UtstyrslisteID']);
+        $ID = $this->input->post('PlukklisteID');
+        $this->Aktiviteter_model->plukklisteleggtilutstyr($ID,trim($this->input->post('UtstyrStrekkode')));
+        redirect('Aktiviteter/Plukkliste/'.$ID);
+      } elseif ($this->input->post('PlukklisteLagre')) {
+        $ID = $this->input->post('PlukklisteID');
+        $plukkliste['AktivitetID'] = $this->input->post('AktivitetID');
+        $plukkliste['Beskrivelse'] = $this->input->post('Beskrivelse');
+        $plukkliste['Notater'] = $this->input->post('Notater');
+        $plukkliste = $this->Aktiviteter_model->lagreplukkliste($ID,$plukkliste);
+        redirect('Aktiviteter/Plukkliste/'.$plukkliste['PlukklisteID']);
       } else {
-        $data['Utstyrsliste'] = $this->Aktiviteter_model->utstyrsliste($this->uri->segment(3));
+        $data['Plukkliste'] = $this->Aktiviteter_model->plukkliste($this->uri->segment(3));
         $data['Aktiviteter'] = $this->Aktiviteter_model->aktiviteter();
-        $data['ListeOverUtstyr'] = $this->Aktiviteter_model->listeoverutstyr($this->uri->segment(3));
-        $this->template->load('standard','aktiviteter/utstyrsliste',$data);
+        $data['Utstyrsliste'] = $this->Aktiviteter_model->utstyrsliste($this->uri->segment(3));
+        $this->template->load('standard','aktiviteter/plukkliste',$data);
       }
     }
 

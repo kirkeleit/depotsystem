@@ -1,8 +1,7 @@
-<h3 class="sub-header">Lagerplass</h3>
-
 <?php echo form_open_multipart('Utstyr/Lagerplass/'.$Lagerplass['LagerplassID']); ?>
 <input type="hidden" name="LagerplassID" value="<?php echo set_value('LagerplassID',$Lagerplass['LagerplassID']); ?>" />
 <div class="panel panel-default">
+  <div class="panel-heading"><b>Lagerplass</b></div>
   <div class="panel-body">
 
     <div class="form-group">
@@ -48,7 +47,7 @@
 </div>
 
 <?php if (isset($Utstyrsliste)) { ?>
-<div class="panel panel-default">
+<div class="panel panel-info">
   <div class="panel-heading"><b>Utstyr på lagerplass</b></div>
   <div class="panel-body">
   <div class="table-responsive">

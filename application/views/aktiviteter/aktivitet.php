@@ -1,8 +1,7 @@
-<h3 class="sub-header">Aktivitet</h3>
-
 <?php echo form_open_multipart('Aktiviteter/Aktivitet/'.$Aktivitet['AktivitetID']); ?>
 <input type="hidden" name="AktivitetID" value="<?php echo set_value('AktivitetID',$Aktivitet['AktivitetID']); ?>" />
 <div class="panel panel-primary">
+  <div class="panel-heading"><b>Aktivitet</b></div>
   <div class="panel-body">
 
     <div class="form-group">
