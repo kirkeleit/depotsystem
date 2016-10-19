@@ -17,7 +17,7 @@
   if (isset($Utstyrsliste)) {
     foreach ($Utstyrsliste as $Utstyr) {
 ?>
-        <tr>
+        <tr<?php if ($Utstyr['Status'] > 0) { echo ' class="warning"'; } ?>>
           <td><?php echo $Utstyr['LagerplassNavn']; ?></td>
           <td><?php echo $Utstyr['KategoriNavn']; ?></td>
           <td><?php echo $Utstyr['ProdusentNavn']; ?></td>

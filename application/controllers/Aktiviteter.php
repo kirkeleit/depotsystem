@@ -29,7 +29,7 @@
       } else {
         $data['Aktivitet'] = $this->Aktiviteter_model->aktivitet($this->uri->segment(3));
         $data['Aktivitetstyper'] = $this->Aktiviteter_model->aktivitetstyper();
-        $data['Utstyrslister'] = $this->Aktiviteter_model->utstyrslister(array('AktivitetID' => $this->uri->segment(3)));
+        $data['Plukklister'] = $this->Aktiviteter_model->plukklister(array('AktivitetID' => $this->uri->segment(3)));
         $this->template->load('standard','aktiviteter/aktivitet',$data);
       }
     }
@@ -54,6 +54,13 @@
         $plukkliste['Notater'] = $this->input->post('Notater');
         $plukkliste = $this->Aktiviteter_model->lagreplukkliste($ID,$plukkliste);
         redirect('Aktiviteter/Plukkliste/'.$plukkliste['PlukklisteID']);
+      } elseif ($this->input->post('PlukklisteSlett')) {
+        $this->Aktiviteter_model->slettplukkliste($this->input->post('PlukklisteID'));
+        redirect('Aktiviteter');
+      } elseif ($this->input->post('PlukklisteUtstyrInn')) {
+        $ID = $this->input->post('PlukklisteID');
+        $this->Aktiviteter_model->plukklistefjernutstyr($ID,$this->input->post('UtstyrID'));
+        redirect('Aktiviteter/Plukkliste/'.$ID);
       } else {
         $data['Plukkliste'] = $this->Aktiviteter_model->plukkliste($this->uri->segment(3));
         $data['Aktiviteter'] = $this->Aktiviteter_model->aktiviteter();

@@ -59,6 +59,12 @@
         </tr>
 <?php
     }
+  } else {
+?>
+        <tr>
+          <td colspan="6">Ingen åpne plukklister.</td>
+        </tr>
+<?php
   }
 ?>
       </tbody>

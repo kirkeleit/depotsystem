@@ -24,7 +24,7 @@
     }
 
     function aktivitet($ID) {
-      $raktiviteter = $this->db->query("SELECT AktivitetID,DatoRegistrert,DatoEndret,DatoLukket,DatoSlettet,AktivitetTypeID,Navn,Notater,(SELECT COUNT(*) FROM Utstyrslister l WHERE (l.AktivitetID=a.AktivitetID)) AS AntallLister FROM Aktiviteter a WHERE (AktivitetID=".$ID.") LIMIT 1");
+      $raktiviteter = $this->db->query("SELECT AktivitetID,DatoRegistrert,DatoEndret,DatoLukket,DatoSlettet,AktivitetTypeID,Navn,Notater,(SELECT COUNT(*) FROM Plukklister p WHERE (p.AktivitetID=a.AktivitetID)) AS AntallLister FROM Aktiviteter a WHERE (AktivitetID=".$ID.") LIMIT 1");
       if ($aktivitet = $raktiviteter->row_array()) {
         return $aktivitet;
       }
@@ -47,7 +47,7 @@
     }
 
     function plukklister($filter = null) {
-      $sql = "SELECT PlukklisteID,DatoRegistrert,DatoEndret,AktivitetID,(SELECT Navn FROM Aktiviteter a WHERE (a.AktivitetID=p.AktivitetID)) AS AktivitetNavn,Beskrivelse,(SELECT COUNT(*) FROM PlukklisteXUtstyr x WHERE (x.PlukklisteID=p.PlukklisteID)) AS AntallLinjer FROM Plukklister p WHERE 1";
+      $sql = "SELECT PlukklisteID,DatoRegistrert,DatoEndret,AktivitetID,(SELECT Navn FROM Aktiviteter a WHERE (a.AktivitetID=p.AktivitetID)) AS AktivitetNavn,Beskrivelse,(SELECT COUNT(*) FROM PlukklisteXUtstyr x WHERE (x.PlukklisteID=p.PlukklisteID)) AS AntallLinjer FROM Plukklister p WHERE (DatoSlettet Is Null) AND (DatoLukket Is Null)";
       if (isset($filter['AktivitetID'])) {
         $sql .= " AND (AktivitetID=".$filter['AktivitetID'].")";
       }
@@ -85,18 +85,33 @@
       return $plukkliste;
     }
 
+    function slettplukkliste($ID) {
+      $this->db->query("DELETE FROM PlukklisteXUtstyr WHERE PlukklisteID=".$ID);
+      $this->db->query("UPDATE Plukklister SET DatoSlettet='".date('Y-m-d H:i:s')."' WHERE PlukklisteID=".$ID." LIMIT 1");
+    }
+
     function plukklisteleggtilutstyr($PlukklisteID,$Strekkode) {
       $utstyrsliste = $this->db->query("SELECT UtstyrID FROM Utstyr WHERE (Strekkode='".$Strekkode."') AND (Forbruksutstyr=0)");
       if ($utstyr = $utstyrsliste->row_array()) {
-        $this->db->query("INSERT INTO PlukklisteXUtstyr (PlukklisteID,UtstyrID) VALUES (".$PlukklisteID.",".$utstyr['UtstyrID'].")");
+        $this->db->query("INSERT INTO PlukklisteXUtstyr (PlukklisteID,UtstyrID,DatoRegistrertUt) VALUES (".$PlukklisteID.",".$utstyr['UtstyrID'].",NOW())");
         $this->session->set_flashdata('Infomelding','Utstyret er lagt til i plukklisten!');
       } else {
         $this->session->set_flashdata('Feilmelding','Klarte ikke å finne utstyret med strekkode '.$Strekkode.'. Prøv igjen!');
       }
     }
 
+    function plukklistefjernutstyr($PlukklisteID,$Utstyrsliste) {
+      foreach ($Utstyrsliste as $Utstyr) {
+        $this->db->query("UPDATE PlukklisteXUtstyr SET DatoRegistrertInn=NOW() WHERE PlukklisteID=".$PlukklisteID." AND UtstyrID=".$Utstyr);
+      }
+      $rutstyrsliste = $this->db->query("SELECT UtstyrID FROM PlukklisteXUtstyr WHERE (PlukklisteID=".$PlukklisteID.") AND (DatoRegistrertInn='0000-00-00 00:00:00')");
+      if ($rutstyrsliste->num_rows() == 0) {
+        $this->db->query("UPDATE Plukklister SET DatoLukket=NOW() WHERE PlukklisteID=".$PlukklisteID." LIMIT 1");
+      }
+    }
+
     function utstyrsliste($PlukklisteID) {
-      $rutstyrsliste = $this->db->query("SELECT u.UtstyrID,Navn,ProdusentID,(SELECT Navn FROM Produsenter p WHERE (p.ProdusentID=u.ProdusentID)) AS ProdusentNavn,KategoriID,(SELECT Navn FROM Kategorier k WHERE (k.KategoriID=u.KategoriID)) AS KategoriNavn,Strekkode FROM Utstyr u INNER JOIN PlukklisteXUtstyr x ON u.UtstyrID=x.UtstyrID WHERE x.PlukklisteID=".$PlukklisteID);
+      $rutstyrsliste = $this->db->query("SELECT u.UtstyrID,Navn,ProdusentID,(SELECT Navn FROM Produsenter p WHERE (p.ProdusentID=u.ProdusentID)) AS ProdusentNavn,KategoriID,(SELECT Navn FROM Kategorier k WHERE (k.KategoriID=u.KategoriID)) AS KategoriNavn,Strekkode,IF(DatoRegistrertInn='0000-00-00 00:00:00',1,0) AS Status FROM Utstyr u INNER JOIN PlukklisteXUtstyr x ON u.UtstyrID=x.UtstyrID WHERE x.PlukklisteID=".$PlukklisteID);
       foreach ($rutstyrsliste->result_array() as $utstyr) {
         $utstyrsliste[] = $utstyr;
       }

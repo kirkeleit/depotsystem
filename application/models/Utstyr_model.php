@@ -154,7 +154,7 @@
     }
 
     function utstyrsliste($filter = null) {
-      $sql = "SELECT UtstyrID,DatoRegistrert,Navn,Strekkode,Forbruksutstyr,AntallMinimum,IF(u.Forbruksutstyr=1,(SELECT COALESCE(SUM(Antall),0) FROM UtstyrForbruk WHERE (UtstyrForbruk.UtstyrID=u.UtstyrID)),1) AS Antall,(SELECT Navn FROM Kategorier k WHERE (k.KategoriID=u.KategoriID)) AS KategoriNavn,(SELECT Navn FROM Produsenter p WHERE (p.ProdusentID=u.ProdusentID)) AS ProdusentNavn,(SELECT Navn FROM Lagerplasser l WHERE (l.LagerplassID=u.LagerplassID)) AS LagerplassNavn FROM Utstyr u WHERE 1";
+      $sql = "SELECT UtstyrID,DatoRegistrert,Navn,Strekkode,Forbruksutstyr,AntallMinimum,IF(u.Forbruksutstyr=1,(SELECT COALESCE(SUM(Antall),0) FROM UtstyrForbruk WHERE (UtstyrForbruk.UtstyrID=u.UtstyrID)),1) AS Antall,(SELECT Navn FROM Kategorier k WHERE (k.KategoriID=u.KategoriID)) AS KategoriNavn,(SELECT Navn FROM Produsenter p WHERE (p.ProdusentID=u.ProdusentID)) AS ProdusentNavn,(SELECT Navn FROM Lagerplasser l WHERE (l.LagerplassID=u.LagerplassID)) AS LagerplassNavn,(SELECT COUNT(*) FROM PlukklisteXUtstyr x WHERE (x.UtstyrID=u.UtstyrID) AND (x.DatoRegistrertInn='0000-00-00 00:00:00')) AS Status FROM Utstyr u WHERE 1";
       if (isset($filter['LagerplassID'])) {
         $sql .= " AND (LagerplassID=".$filter['LagerplassID'].")";
       }
@@ -170,13 +170,15 @@
     }
 
     function utstyrsinfo($ID) {
-      $rutstyrsliste = $this->db->query("SELECT UtstyrID,DatoRegistrert,DatoEndret,ProdusentID,(SELECT Navn FROM Produsenter p WHERE (p.ProdusentID=u.ProdusentID)) AS ProdusentNavn,KategoriID,(SELECT Navn FROM Kategorier k WHERE (k.KategoriID=u.KategoriID)) AS KategoriNavn,LagerplassID,(SELECT Navn FROM Lagerplasser l WHERE (l.LagerplassID=u.LagerplassID)) AS LagerplassNavn,Navn,Notater,Strekkode,Forbruksutstyr FROM Utstyr u WHERE (UtstyrID=".$ID.") LIMIT 1");
+      $rutstyrsliste = $this->db->query("SELECT UtstyrID,DatoRegistrert,DatoEndret,ProdusentID,(SELECT Navn FROM Produsenter p WHERE (p.ProdusentID=u.ProdusentID)) AS ProdusentNavn,KategoriID,(SELECT Navn FROM Kategorier k WHERE (k.KategoriID=u.KategoriID)) AS KategoriNavn,LagerplassID,(SELECT Navn FROM Lagerplasser l WHERE (l.LagerplassID=u.LagerplassID)) AS LagerplassNavn,Navn,Notater,Strekkode,Forbruksutstyr,AntallMinimum FROM Utstyr u WHERE (UtstyrID=".$ID.") LIMIT 1");
       if ($utstyr = $rutstyrsliste->row_array()) {
         if ($utstyr['Forbruksutstyr'] == 1) {
           $rforbruksliste = $this->db->query("SELECT ID,DatoRegistrert,UtstyrID,AktivitetID,Antall,Kommentar FROM UtstyrForbruk WHERE (UtstyrID=".$utstyr['UtstyrID'].") ORDER BY DatoRegistrert DESC");
           $utstyr['Forbruk'] = $rforbruksliste->result_array();
           unset($rforbruksliste);
         }
+        $rplukklister = $this->db->query("SELECT p.PlukklisteID,DatoRegistrertUt,DatoRegistrertInn,Beskrivelse,p.AktivitetID,(SELECT Navn FROM Aktiviteter WHERE (AktivitetID=p.AktivitetID)) AS AktivitetNavn FROM PlukklisteXUtstyr x INNER JOIN Plukklister p ON p.PlukklisteID=x.PlukklisteID WHERE (UtstyrID=".$utstyr['UtstyrID'].") ORDER BY DatoRegistrertUt DESC");
+        $utstyr['Plukklister'] = $rplukklister->result_array();
         return $utstyr;
       }
     }
