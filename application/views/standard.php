@@ -57,6 +57,15 @@
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
             <li <?php echo ($this->uri->segment(1) == 'Oversikt' ? ' class="active"' : '') ?>><?php echo anchor('/Utstyr/','Oversikt'); ?></li>
+            <li class="dropdown<?php echo ($this->uri->segment(1) == 'Aktiviteter' ? ' active' : '') ?>">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Aktiviteter <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><?php echo anchor('/Aktiviteter/','Oversikt'); ?></li>
+                <li role="separator" class="divider"></li>
+                <li><?php echo anchor('/Aktiviteter/NyAktivitet','Ny aktivitet'); ?></li>
+                <li><?php echo anchor('/Aktiviteter/NyPlukkliste','Ny plukkliste'); ?></li>
+              </ul>
+            </li>
             <li class="dropdown<?php echo ($this->uri->segment(1) == 'Utstyr' ? ' active' : '') ?>">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Utstyr <span class="caret"></span></a>
               <ul class="dropdown-menu">
@@ -68,19 +77,16 @@
                 <li><?php echo anchor('/Utstyr/Lagerplasser','Lagerplasser'); ?></li>
               </ul>
             </li>
-            <li class="dropdown<?php echo ($this->uri->segment(1) == 'Aktiviteter' ? ' active' : '') ?>">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Aktiviteter <span class="caret"></span></a>
+            <li class="dropdown<?php echo ($this->uri->segment(1) == 'Vedlikehold' ? ' active' : '') ?>">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Vedlikehold <span class="caret"></span></a>
               <ul class="dropdown-menu">
-                <li><?php echo anchor('/Aktiviteter/','Oversikt'); ?></li>
-                <li role="separator" class="divider"></li>
-                <li><?php echo anchor('/Aktiviteter/NyAktivitet','Ny aktivitet'); ?></li>
-                <li><?php echo anchor('/Aktiviteter/NyPlukkliste','Ny plukkliste'); ?></li>
+                <li><?php echo anchor('/Vedlikehold/','Oversikt'); ?></li>
               </ul>
             </li>
           </ul>
-          <form class="navbar-form navbar-right">
+          <form class="navbar-form navbar-right" action="<?php echo site_url('Utstyr/Finn'); ?>" method="POST">
             <div class="form-group">
-              <input type="text" class="form-control" placeholder="Strekkode">
+              <input type="text" class="form-control" placeholder="Strekkode" name="FinnUtstyr" <?php echo ($this->uri->segment(2) != 'Plukkliste' ? 'autofocus ' : ''); ?>/>
             </div>
             <button type="submit" class="btn btn-default">Finn</button>
           </form>

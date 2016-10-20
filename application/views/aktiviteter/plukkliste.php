@@ -39,7 +39,8 @@
     <div class="form-group">
       <div class="btn-group col-sm-offset-2 col-sm-10">
         <input type="submit" class="btn btn-primary" value="Lagre" name="PlukklisteLagre" />
-        <input type="submit" class="btn btn-danger" value="Slett" name="PlukklisteSlett" />
+        <input type="submit" class="btn btn-success" value="Avslutt" name="PlukklisteAvslutt" />
+        <input type="submit" class="btn btn-danger" value="Slett" name="PlukklisteSlett" <?php if (isset($Utstyrsliste)) { ?>disabled<?php } ?>/>
       </div>
     </div>
   </div>
@@ -81,7 +82,7 @@
   <div class="panel-footer">
     <div class="input-group">
       <div class="btn-group">
-        <input type="submit" class="btn btn-success btn-xs" value="Sjekk inn" name="PlukklisteUtstyrInn" />
+        <input type="submit" class="btn btn-success btn-sm" value="Registrer inn utstyr" name="PlukklisteUtstyrInn" />
       </div>
     </div>
   </div>

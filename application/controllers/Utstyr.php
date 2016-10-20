@@ -9,6 +9,17 @@
       $this->template->load('standard','utstyr/oversikt',$data);
     }
 
+    public function finn() {
+      $this->load->model('Utstyr_model');
+      $data['Utstyrsliste'] = $this->Utstyr_model->finnutstyr($this->input->post('FinnUtstyr'));
+      if (count($data['Utstyrsliste']) == 1) {
+        $Utstyr = $data['Utstyrsliste'][0];
+        redirect('Utstyr/Utstyrsinfo/'.$Utstyr['UtstyrID']);
+      } else {
+        $this->template->load('standard','utstyr/finn',$data);
+      }
+    }
+
     public function lagerplasser() {
       $this->load->model('Utstyr_model');
       $data['Lagerplasser'] = $this->Utstyr_model->lagerplasser();

@@ -40,6 +40,8 @@
     <div class="form-group">
       <div class="col-sm-offset-2 col-sm-10">
         <input type="submit" class="btn btn-primary" value="Lagre" name="AktivitetLagre" />
+        <input type="submit" class="btn btn-success" value="Lukk" name="AktivitetLukk" />
+        <input type="submit" class="btn btn-danger" value="Slett" name="AktivitetSlett" />
       </div>
     </div>
   </div>

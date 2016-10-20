@@ -23,6 +23,12 @@
         </tr>
 <?php
     }
+  } else {
+?>
+        <tr>
+          <td colspan="4">Ingen åpne aktiviteter.</td>
+        </tr>
+<?php
   }
 ?>
       </tbody>

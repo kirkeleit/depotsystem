@@ -1,6 +1,17 @@
 <?php
   class Utstyr_model extends CI_Model {
 
+    function finnutstyr($Strekkode) {
+      $rutstyrsliste = $this->db->query("SELECT UtstyrID,DatoRegistrert,Navn,Strekkode,Forbruksutstyr,AntallMinimum,IF(u.Forbruksutstyr=1,(SELECT COALESCE(SUM(Antall),0) FROM UtstyrForbruk WHERE (UtstyrForbruk.UtstyrID=u.UtstyrID)),1) AS Antall,(SELECT Navn FROM Kategorier k WHERE (k.KategoriID=u.KategoriID)) AS KategoriNavn,(SELECT Navn FROM Produsenter p WHERE (p.ProdusentID=u.ProdusentID)) AS ProdusentNavn,(SELECT Navn FROM Lagerplasser l WHERE (l.LagerplassID=u.LagerplassID)) AS LagerplassNavn,(SELECT COUNT(*) FROM PlukklisteXUtstyr x WHERE (x.UtstyrID=u.UtstyrID) AND (x.DatoRegistrertInn='0000-00-00 00:00:00')) AS Status FROM Utstyr u WHERE (UtstyrID='".$Strekkode."') OR (Strekkode='".$Strekkode."') OR (Navn Like '".$Strekkode."') ORDER BY Navn");
+      foreach ($rutstyrsliste->result_array() as $rutstyr) {
+        $utstyrsliste[] = $rutstyr;
+        unset($rutstyr);
+      }
+      if (isset($utstyrsliste)) {
+        return $utstyrsliste;
+      }
+    }
+
     function lagerplasser() {
       $rlagerplasser = $this->db->query("SELECT LagerplassID,Navn,ForeldreLagerplassID,Strekkode,DatoRegistrert,(SELECT COUNT(*) FROM Utstyr WHERE (LagerplassID=l.LagerplassID)) AS AntallUtstyr FROM Lagerplasser l WHERE (DatoSlettet Is Null) ORDER BY Navn ASC");
       foreach ($rlagerplasser->result_array() as $rlagerplass) {
@@ -200,7 +211,7 @@
     }
 
     function statusforbruk() {
-      $rutstyrsliste = $this->db->query("SELECT UtstyrID,DatoRegistrert,Navn,Strekkode,Forbruksutstyr,(SELECT SUM(Antall) FROM UtstyrForbruk WHERE (UtstyrForbruk.UtstyrID=u.UtstyrID)) AS Antall,AntallMinimum,(SELECT Navn FROM Lagerplasser l WHERE (l.LagerplassID=u.LagerplassID)) AS Lagerplass,(SELECT DatoRegistrert FROM UtstyrForbruk f WHERE (f.UtstyrID=u.UtstyrID) ORDER BY DatoRegistrert DESC LIMIT 1) AS SisteForbruk FROM Utstyr u WHERE (Forbruksutstyr=1) AND ((SELECT SUM(Antall) FROM UtstyrForbruk WHERE (UtstyrForbruk.UtstyrID=u.UtstyrID))<AntallMinimum) ORDER BY Navn ASC");
+      $rutstyrsliste = $this->db->query("SELECT UtstyrID,DatoRegistrert,Navn,Strekkode,Forbruksutstyr,(SELECT COALESCE(SUM(Antall),0) FROM UtstyrForbruk WHERE (UtstyrForbruk.UtstyrID=u.UtstyrID)) AS Antall,AntallMinimum,(SELECT Navn FROM Lagerplasser l WHERE (l.LagerplassID=u.LagerplassID)) AS Lagerplass,(SELECT DatoRegistrert FROM UtstyrForbruk f WHERE (f.UtstyrID=u.UtstyrID) ORDER BY DatoRegistrert DESC LIMIT 1) AS SisteForbruk FROM Utstyr u WHERE (Forbruksutstyr=1) AND ((SELECT COALESCE(SUM(Antall),0) FROM UtstyrForbruk WHERE (UtstyrForbruk.UtstyrID=u.UtstyrID))<AntallMinimum) ORDER BY Navn ASC");
       foreach ($rutstyrsliste->result_array() as $rutstyr) {
         $utstyrsliste[] = $rutstyr;
         unset($rutstyr);

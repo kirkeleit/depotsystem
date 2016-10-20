@@ -26,6 +26,12 @@
         $aktivitet['Notater'] = $this->input->post('Notater');
         $aktivitet = $this->Aktiviteter_model->lagreaktivitet($ID,$aktivitet);
         redirect('Aktiviteter/Aktivitet/'.$aktivitet['AktivitetID']);
+      } elseif ($this->input->post('AktivitetSlett')) {
+        $this->Aktiviteter_model->slettaktivitet($this->input->post('AktivitetID'));
+        redirect('Aktiviteter/');
+      } elseif ($this->input->post('AktivitetLukk')) {
+        $this->Aktiviteter_model->lukkaktivitet($this->input->post('AktivitetID'));
+        redirect('Aktiviteter/');
       } else {
         $data['Aktivitet'] = $this->Aktiviteter_model->aktivitet($this->uri->segment(3));
         $data['Aktivitetstyper'] = $this->Aktiviteter_model->aktivitetstyper();
@@ -54,6 +60,10 @@
         $plukkliste['Notater'] = $this->input->post('Notater');
         $plukkliste = $this->Aktiviteter_model->lagreplukkliste($ID,$plukkliste);
         redirect('Aktiviteter/Plukkliste/'.$plukkliste['PlukklisteID']);
+      } elseif ($this->input->post('PlukklisteAvslutt')) {
+        $data['PlukklisteID'] = $this->input->post('PlukklisteID');
+        $data['Utstyrsliste'] = $this->Aktiviteter_model->utstyrsliste($this->uri->segment(3));
+        $this->template->load('standard','aktiviteter/tapskadeskjema',$data);
       } elseif ($this->input->post('PlukklisteSlett')) {
         $this->Aktiviteter_model->slettplukkliste($this->input->post('PlukklisteID'));
         redirect('Aktiviteter');
@@ -66,6 +76,26 @@
         $data['Aktiviteter'] = $this->Aktiviteter_model->aktiviteter();
         $data['Utstyrsliste'] = $this->Aktiviteter_model->utstyrsliste($this->uri->segment(3));
         $this->template->load('standard','aktiviteter/plukkliste',$data);
+      }
+    }
+
+    public function tapskadeskjema() {
+      $this->load->model('Aktiviteter_model');
+      if ($this->input->post('TapSkadeLagre')) {
+        $data['PlukklisteID'] = $this->input->post('PlukklisteID');
+        $UtstyrID = $this->input->post('UtstyrID');
+        $SkadeType = $this->input->post('SkadeType');
+        $Kommentar = $this->input->post('Kommentar');
+        for ($x=0; $x<sizeof($UtstyrID); $x++) {
+          $Utstyr['UtstyrID'] = $UtstyrID[$x];
+          $Utstyr['SkadeType'] = $SkadeType[$x];
+          $Utstyr['Kommentar'] = $Kommentar[$x];
+          $Utstyrsliste[] = $Utstyr;
+          unset($Utstyr);
+        }
+        $data['Utstyrsliste'] = $Utstyrsliste;
+        $this->Aktiviteter_model->lagretapskadeskjema($data);
+        redirect('Aktiviteter');
       }
     }
 

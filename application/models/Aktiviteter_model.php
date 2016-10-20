@@ -13,7 +13,7 @@
     }
 
     function aktiviteter() {
-      $raktiviteter = $this->db->query("SELECT AktivitetID,DatoRegistrert,DatoEndret,DatoLukket,DatoSlettet,AktivitetTypeID,(SELECT Navn FROM Aktivitetstyper t WHERE (t.AktivitetTypeID=a.AktivitetTypeID)) AS AktivitetTypeNavn,Navn,(SELECT COUNT(*) FROM Plukklister p WHERE (p.AktivitetID=a.AktivitetID)) AS AntallLister FROM Aktiviteter a ORDER BY DatoRegistrert ASC");
+      $raktiviteter = $this->db->query("SELECT AktivitetID,DatoRegistrert,DatoEndret,DatoLukket,DatoSlettet,AktivitetTypeID,(SELECT Navn FROM Aktivitetstyper t WHERE (t.AktivitetTypeID=a.AktivitetTypeID)) AS AktivitetTypeNavn,Navn,(SELECT COUNT(*) FROM Plukklister p WHERE (p.AktivitetID=a.AktivitetID)) AS AntallLister FROM Aktiviteter a WHERE (DatoSlettet='0000-00-00 00:00:00') AND (DatoLukket='0000-00-00 00:00:00') ORDER BY DatoRegistrert ASC");
       foreach ($raktiviteter->result_array() as $raktivitet) {
         $aktiviteter[] = $raktivitet;
         unset($raktivitet);
@@ -44,6 +44,16 @@
         $this->session->set_flashdata('Infomelding','Aktiviteten "'.$aktivitet['Navn'].'" ble vellykket oppdatert!');
       }
       return $aktivitet;
+    }
+
+    function lukkaktivitet($ID) {
+      $this->db->query("UPDATE Aktiviteter SET DatoSlettet='".date('Y-m-d H:i:s')."' WHERE AktivitetID=".$ID." LIMIT 1");
+      $this->session->set_flashdata('Infomelding','Aktiviteten er nå lukket!');
+    }
+
+    function slettaktivitet($ID) {
+      $this->db->query("UPDATE Aktiviteter SET DatoSlettet='".date('Y-m-d H:i:s')."' WHERE AktivitetID=".$ID." LIMIT 1");
+      $this->session->set_flashdata('Infomelding','Aktiviteten er nå slettet!');
     }
 
     function plukklister($filter = null) {
@@ -88,6 +98,7 @@
     function slettplukkliste($ID) {
       $this->db->query("DELETE FROM PlukklisteXUtstyr WHERE PlukklisteID=".$ID);
       $this->db->query("UPDATE Plukklister SET DatoSlettet='".date('Y-m-d H:i:s')."' WHERE PlukklisteID=".$ID." LIMIT 1");
+      $this->session->set_flashdata('Infomelding','Plukklisten er nå slettet!');
     }
 
     function plukklisteleggtilutstyr($PlukklisteID,$Strekkode) {
@@ -118,6 +129,14 @@
       if (isset($utstyrsliste)) {
         return $utstyrsliste;
       }
+    }
+
+    function lagretapskadeskjema($data) {
+      foreach ($data['Utstyrsliste'] as $Utstyr) {
+        $this->db->query("INSERT INTO Vedlikeholdsliste (DatoRegistrert,DatoEndret,UtstyrID,SkadeType,Kommentar) VALUES (NOW(),NOW(),'".$Utstyr['UtstyrID']."','".$Utstyr['SkadeType']."','".$Utstyr['Kommentar']."')");
+        $this->db->query("UPDATE PlukklisteXUtstyr SET DatoRegistrertInn=NOW() WHERE PlukklisteID=".$data['PlukklisteID']." AND UtstyrID=".$Utstyr['UtstyrID']);
+      }
+      $this->db->query("UPDATE Plukklister SET DatoLukket=NOW() WHERE PlukklisteID=".$data['PlukklisteID']." LIMIT 1");
     }
 
   }
