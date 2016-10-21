@@ -7,6 +7,7 @@
       $this->load->model('Aktiviteter_model');
       $data['Aktiviteter'] = $this->Aktiviteter_model->aktiviteter();
       $data['Plukklister'] = $this->Aktiviteter_model->plukklister();
+      $data['Brukslogger'] = $this->Aktiviteter_model->brukslogger();
       $this->template->load('standard','aktiviteter/liste',$data);
     }
 
@@ -96,6 +97,37 @@
         $data['Utstyrsliste'] = $Utstyrsliste;
         $this->Aktiviteter_model->lagretapskadeskjema($data);
         redirect('Aktiviteter');
+      }
+    }
+
+    public function nybrukslogg() {
+      $this->load->model('Aktiviteter_model');
+      $this->load->model('Utstyr_model');
+      $data['Brukslogg'] = null;
+      $data['Aktiviteter'] = $this->Aktiviteter_model->aktiviteter();
+      $data['Utstyrsliste'] = $this->Utstyr_model->utstyrsliste(array('Bruksregistrering'=>'1'));
+      $this->template->load('standard','aktiviteter/brukslogg',$data);
+    }
+
+    public function brukslogg() {
+      $this->load->model('Aktiviteter_model');
+      $this->load->model('Utstyr_model');
+      if ($this->input->post('BruksloggLagre')) {
+        $ID = $this->input->post('BruksloggID');
+        $data['AktivitetID'] = $this->input->post('AktivitetID');
+        $data['UtstyrID'] = $this->input->post('UtstyrID');
+        $data['Timer'] = $this->input->post('Timer');
+        $data['Kilometer'] = $this->input->post('Kilometer');
+        $data['Tilstand'] = $this->input->post('Tilstand');
+        $data['Kommentar'] = $this->input->post('Kommentar');
+        $data['Notater'] = $this->input->post('Notater');
+        $data = $this->Aktiviteter_model->lagrebrukslogg($ID,$data);
+        redirect('/Aktiviteter/Brukslogg/'.$data['BruksloggID']);
+      } else {
+        $data['Brukslogg'] = $this->Aktiviteter_model->brukslogg($this->uri->segment(3));
+        $data['Aktiviteter'] = $this->Aktiviteter_model->aktiviteter();
+        $data['Utstyrsliste'] = $this->Utstyr_model->utstyrsliste(array('Bruksregistrering'=>'1'));
+        $this->template->load('standard','aktiviteter/brukslogg',$data);
       }
     }
 

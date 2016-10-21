@@ -77,3 +77,40 @@
     </table>
   </div>
 </div>
+
+<div class="panel panel-info">
+  <div class="panel-heading"><b>Brukslogger</b></div>
+  <div class="table-responsive">
+    <table class="table table-striped table-hover table-condensed">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Påbegynt</th>
+          <th>Sist endret</th>
+          <th>Aktivitet</th>
+          <th>Beskrivelse</th>
+          <th>Linjer</th>
+        </tr>
+      </thead>
+      <tbody>
+<?php
+  if (isset($Brukslogger)) {
+    foreach ($Brukslogger as $Brukslogg) {
+?>
+        <tr>
+          <td><?php echo $Brukslogg['BruksloggID']; ?></td>
+        </tr>
+<?php
+    }
+  } else {
+?>
+        <tr>
+          <td colspan="6">Ingen brukslogger.</td>
+        </tr>
+<?php
+  }
+?>
+      </tbody>
+    </table>
+  </div>
+</div>

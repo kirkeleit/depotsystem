@@ -64,6 +64,7 @@
                 <li role="separator" class="divider"></li>
                 <li><?php echo anchor('/Aktiviteter/NyAktivitet','Ny aktivitet'); ?></li>
                 <li><?php echo anchor('/Aktiviteter/NyPlukkliste','Ny plukkliste'); ?></li>
+                <li><?php echo anchor('/Aktiviteter/NyBrukslogg','Ny brukslogg'); ?></li>
               </ul>
             </li>
             <li class="dropdown<?php echo ($this->uri->segment(1) == 'Utstyr' ? ' active' : '') ?>">

@@ -125,6 +125,7 @@
       $rutstyrsliste = $this->db->query("SELECT u.UtstyrID,Navn,ProdusentID,(SELECT Navn FROM Produsenter p WHERE (p.ProdusentID=u.ProdusentID)) AS ProdusentNavn,KategoriID,(SELECT Navn FROM Kategorier k WHERE (k.KategoriID=u.KategoriID)) AS KategoriNavn,Strekkode,IF(DatoRegistrertInn='0000-00-00 00:00:00',1,0) AS Status FROM Utstyr u INNER JOIN PlukklisteXUtstyr x ON u.UtstyrID=x.UtstyrID WHERE x.PlukklisteID=".$PlukklisteID);
       foreach ($rutstyrsliste->result_array() as $utstyr) {
         $utstyrsliste[] = $utstyr;
+        unset($utstyr);
       }
       if (isset($utstyrsliste)) {
         return $utstyrsliste;
@@ -137,6 +138,40 @@
         $this->db->query("UPDATE PlukklisteXUtstyr SET DatoRegistrertInn=NOW() WHERE PlukklisteID=".$data['PlukklisteID']." AND UtstyrID=".$Utstyr['UtstyrID']);
       }
       $this->db->query("UPDATE Plukklister SET DatoLukket=NOW() WHERE PlukklisteID=".$data['PlukklisteID']." LIMIT 1");
+    }
+
+    function brukslogger() {
+      $rbrukslogger = $this->db->query("SELECT BruksloggID,DatoRegistrert,AktivitetID,UtstyrID,Timer,Kilometer,Tilstand,Kommentar,Notater FROM Brukslogger b ORDER BY DatoRegistrert ASC");
+      foreach ($rbrukslogger->result_array() as $rbrukslogg) {
+        $brukslogger[] = $rbrukslogg;
+        unset($rbrukslogg);
+      }
+      if (isset($brukslogger)) {
+        return $brukslogger;
+      }
+    }
+
+    function brukslogg($ID) {
+      $rbrukslogger = $this->db->query("SELECT BruksloggID,DatoRegistrert,AktivitetID,UtstyrID,Timer,Kilometer,Tilstand,Kommentar,Notater FROM Brukslogger b WHERE (BruksloggID=".$ID.") ORDER BY DatoRegistrert ASC");
+      if ($rbrukslogg = $rbrukslogger->row_array()) {
+        return $rbrukslogg;
+      }
+    }
+
+    function lagrebrukslogg($ID,$brukslogg) {
+      $brukslogg['DatoEndret'] = date('Y-m-d H:i:s');
+      if ($ID == null) {
+        $brukslogg['DatoRegistrert'] = $brukslogg['DatoEndret'];
+        $this->db->query($this->db->insert_string('Brukslogger',$brukslogg));
+        $brukslogg['BruksloggID'] = $this->db->insert_id();
+      } else {
+        $this->db->query($this->db->update_string('Brukslogger',$brukslogg,'BruksloggID='.$ID));
+        $brukslogg['BruksloggID'] = $ID;
+      }
+      if ($this->db->affected_rows() > 0) {
+        $this->session->set_flashdata('Infomelding','Bruksloggen ble vellykket oppdatert!');
+      }
+      return $brukslogg;
     }
 
   }

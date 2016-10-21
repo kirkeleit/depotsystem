@@ -17,9 +17,9 @@
             <label for="SkadeType" class="col-sm-2 control-label">Skadetype:</label>
             <div class="col-sm-10">
               <select class="form-control" name="SkadeType[]">
-                <option value="0">Trenger vedlikehold</option>
-                <option value="1">Utstyret er skadet/ødelagt</option>
-                <option value="2">Utstyret er mistet</option>
+                <option value="1">Trenger vedlikehold</option>
+                <option value="2">Utstyret er skadet/ødelagt</option>
+                <option value="3">Utstyret er mistet</option>
               </select>
             </div>
           </div>

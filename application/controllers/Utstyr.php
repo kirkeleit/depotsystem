@@ -168,6 +168,7 @@
         $utstyr['Strekkode'] = $this->input->post('Strekkode');
         $utstyr['Forbruksutstyr'] = $this->input->post('Forbruksutstyr');
         $utstyr['AntallMinimum'] = $this->input->post('AntallMinimum');
+        $utstyr['Bruksregistrering'] = $this->input->post('Bruksregistrering');
         $utstyr = $this->Utstyr_model->lagreutstyr($ID,$utstyr);
         redirect('utstyr/utstyrsinfo/'.$utstyr['UtstyrID']);
       } else {

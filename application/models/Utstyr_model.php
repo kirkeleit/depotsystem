@@ -169,6 +169,13 @@
       if (isset($filter['LagerplassID'])) {
         $sql .= " AND (LagerplassID=".$filter['LagerplassID'].")";
       }
+      if (isset($filter['Bruksregistrering'])) {
+        if ($filter['Bruksregistrering'] == 0) {
+          $sql .= " AND (Bruksregistrering=0)";
+        } elseif ($filter['Bruksregistrering'] == 1) {
+          $sql .= " AND (Bruksregistrering>0)";
+        }
+      }
       $sql .= " ORDER BY Navn ASC";
       $rutstyrsliste = $this->db->query($sql);
       foreach ($rutstyrsliste->result_array() as $rutstyr) {
@@ -181,7 +188,7 @@
     }
 
     function utstyrsinfo($ID) {
-      $rutstyrsliste = $this->db->query("SELECT UtstyrID,DatoRegistrert,DatoEndret,ProdusentID,(SELECT Navn FROM Produsenter p WHERE (p.ProdusentID=u.ProdusentID)) AS ProdusentNavn,KategoriID,(SELECT Navn FROM Kategorier k WHERE (k.KategoriID=u.KategoriID)) AS KategoriNavn,LagerplassID,(SELECT Navn FROM Lagerplasser l WHERE (l.LagerplassID=u.LagerplassID)) AS LagerplassNavn,Navn,Notater,Strekkode,Forbruksutstyr,AntallMinimum FROM Utstyr u WHERE (UtstyrID=".$ID.") LIMIT 1");
+      $rutstyrsliste = $this->db->query("SELECT UtstyrID,DatoRegistrert,DatoEndret,ProdusentID,(SELECT Navn FROM Produsenter p WHERE (p.ProdusentID=u.ProdusentID)) AS ProdusentNavn,KategoriID,(SELECT Navn FROM Kategorier k WHERE (k.KategoriID=u.KategoriID)) AS KategoriNavn,LagerplassID,(SELECT Navn FROM Lagerplasser l WHERE (l.LagerplassID=u.LagerplassID)) AS LagerplassNavn,Navn,Notater,Strekkode,Forbruksutstyr,AntallMinimum,Bruksregistrering FROM Utstyr u WHERE (UtstyrID=".$ID.") LIMIT 1");
       if ($utstyr = $rutstyrsliste->row_array()) {
         if ($utstyr['Forbruksutstyr'] == 1) {
           $rforbruksliste = $this->db->query("SELECT ID,DatoRegistrert,UtstyrID,AktivitetID,Antall,Kommentar FROM UtstyrForbruk WHERE (UtstyrID=".$utstyr['UtstyrID'].") ORDER BY DatoRegistrert DESC");

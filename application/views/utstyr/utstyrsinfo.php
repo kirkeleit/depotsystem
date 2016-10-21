@@ -1,7 +1,7 @@
 <?php echo form_open_multipart('Utstyr/Utstyrsinfo/'.$Utstyr['UtstyrID'],array('class'=>'form-horizontal')); ?>
 <input type="hidden" name="UtstyrID" value="<?php echo set_value('UtstyrID',$Utstyr['UtstyrID']); ?>" />
 <div class="panel panel-primary">
-  <div class="panel-heading"><b>Endre utstyr</b></div>
+  <div class="panel-heading"><b>Utstyrsinformasjon</b></div>
   <div class="panel-body">
 
     <div class="form-group">
@@ -90,6 +90,17 @@
       </div>
     </div>
 
+    <div class="form-group">
+      <label for="Bruksregistrering" class="col-sm-2 control-label">Bruksregistrering:</label>
+      <div class="col-sm-10">
+        <select class="form-control" name="Bruksregistrering">
+          <option value="0" <?php echo set_select('Bruksregistrering',0,($Utstyr['Bruksregistrering'] == 0) ? TRUE : FALSE); ?>>Ingen bruksregistrering</option>
+          <option value="1" <?php echo set_select('Bruksregistrering',1,($Utstyr['Bruksregistrering'] == 1) ? TRUE : FALSE); ?>>Bruksregistrering (timer)</option>
+          <option value="2" <?php echo set_select('Bruksregistrering',2,($Utstyr['Bruksregistrering'] == 2) ? TRUE : FALSE); ?>>Bruksregistrering (kilometer)</option>
+        </select>
+      </div>
+    </div>
+
   </div>
   <div class="panel-footer">
     <div class="form-group">
@@ -144,7 +155,7 @@
 <?php if ($Utstyr['Forbruksutstyr'] == 0) { ?>
 <?php if (isset($Utstyr['Plukklister'])) { ?>
 <div class="panel panel-info">
-  <div class="panel-heading"><b>Brukslogg</b></div>
+  <div class="panel-heading"><b>Plukklister</b></div>
   <div class="table-responsive">
     <table class="table table-striped table-hover table-condensed">
       <thead>
@@ -157,13 +168,21 @@
       </thead>
       <tbody>
 <?php
-  foreach ($Utstyr['Plukklister'] as $Plukkliste) {
+  if (count($Utstyr['Plukklister']) > 0) {
+    foreach ($Utstyr['Plukklister'] as $Plukkliste) {
 ?>
         <tr<?php if ($Plukkliste['DatoRegistrertInn'] == '0000-00-00 00:00:00') { echo ' class="warning"'; } ?>>
           <td><?php echo ($Plukkliste['AktivitetID'] > 0 ? anchor('/Aktiviteter/Aktivitet/'.$Plukkliste['AktivitetID'],$Plukkliste['AktivitetNavn']) : '&nbsp;'); ?></td>
           <td><?php echo anchor('/Aktiviteter/Plukkliste/'.$Plukkliste['PlukklisteID'],$Plukkliste['Beskrivelse']); ?></td>
           <td><?php echo date('d.m.Y H:i',strtotime($Plukkliste['DatoRegistrertUt'])); ?></td>
           <td><?php echo ($Plukkliste['DatoRegistrertInn'] != '0000-00-00 00:00:00' ? date('d.m.Y H:i',strtotime($Plukkliste['DatoRegistrertInn'])) : '&nbsp;'); ?></td>
+        </tr>
+<?php
+    }
+  } else {
+?>
+        <tr>
+          <td colspan="4">Ingen plukklister er registrert med denne på.</td>
         </tr>
 <?php
   }
